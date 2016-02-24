@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.pro.restaurante_demo.Adapters.AdaptadorDirecciones;
 import com.example.pro.restaurante_demo.R;
-import com.example.pro.restaurante_demo.UI.lineaDivisora;
+import com.example.pro.restaurante_demo.Utils.lineaDivisora;
 
 
 /**

@@ -23,12 +23,12 @@ public class Comida  {
 
     @Getter
     @Setter
-    private int idDrawable;
+    private String img;
 
-    public Comida(float precio, String nombre, int idDrawable) {
+    public Comida(float precio, String nombre, String img) {
         this.precio = precio;
         this.nombre = nombre;
-        this.idDrawable = idDrawable;
+        this.img = img;
     }
 
     public static final List<Comida> COMIDAS_POPULARES = new ArrayList<Comida>();
@@ -36,7 +36,7 @@ public class Comida  {
     public static final List<Comida> POSTRES = new ArrayList<>();
     public static final List<Comida> PLATILLOS = new ArrayList<>();
 
-    static {
+    /*static {
         COMIDAS_POPULARES.add(new Comida(5, "Camarones Tismados", R.drawable.camarones));
         COMIDAS_POPULARES.add(new Comida(3.2f, "Rosca Herbárea", R.drawable.rosca));
         COMIDAS_POPULARES.add(new Comida(12f, "Sushi Extremo", R.drawable.sushi));
@@ -60,6 +60,6 @@ public class Comida  {
         POSTRES.add(new Comida(2.5f, "Cupcake Festival", R.drawable.cupcakes_festival));
         POSTRES.add(new Comida(4, "Pastel De Fresa", R.drawable.pastel_fresa));
         POSTRES.add(new Comida(5, "Muffin Amoroso", R.drawable.muffin_amoroso));
-    }
+    }*/
 
 }

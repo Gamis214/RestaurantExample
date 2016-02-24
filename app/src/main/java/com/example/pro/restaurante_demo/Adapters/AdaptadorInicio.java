@@ -51,9 +51,10 @@ public class AdaptadorInicio extends RecyclerView.Adapter<AdaptadorInicio.ViewHo
         Comida item = Comida.COMIDAS_POPULARES.get(position);
 
         Glide.with(viewHolder.itemView.getContext())
-                .load(item.getIdDrawable())
+                .load(item.getImg())
                 .centerCrop()
                 .into(viewHolder.imagen);
+
         viewHolder.nombre.setText(item.getNombre());
         viewHolder.precio.setText("$" + item.getPrecio());
     }

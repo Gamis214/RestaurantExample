@@ -50,7 +50,7 @@ public class AdaptadorCategorias extends RecyclerView.Adapter<AdaptadorCategoria
         Comida item = items.get(position);
 
         Glide.with(viewHolder.itemView.getContext())
-                .load(item.getIdDrawable())
+                .load(item.getImg())
                 .centerCrop()
                 .into(viewHolder.imagen);
 

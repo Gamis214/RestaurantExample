@@ -1,5 +1,6 @@
 package com.example.pro.restaurante_demo.Activitys;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,13 +17,25 @@ import android.view.MenuItem;
 import com.example.pro.restaurante_demo.Fragments.Categorias.FragmentoCategorias;
 import com.example.pro.restaurante_demo.Fragments.MiCuenta.FragmentoCuenta;
 import com.example.pro.restaurante_demo.Fragments.inicio.FragmentoInicio;
+import com.example.pro.restaurante_demo.Models.Comida;
+import com.example.pro.restaurante_demo.Models.ComidasService;
 import com.example.pro.restaurante_demo.R;
+import com.example.pro.restaurante_demo.Servicios.menuServiceAPI;
+import com.example.pro.restaurante_demo.Utils.Constants;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private Fragment fragmentoGenerico;
+    private ComidasService service_result_comidas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +44,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         agregarToolbar();
         iniciarVariables();
+        getComidasService();
 
+    }
+
+    private void getComidasService(){
+
+        final ProgressDialog loading = ProgressDialog.show(this, "Obteniendo Datos", "Porfavor espere...", false, false);
+
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(Constants.ROOT_URL_COMIDA_SERVICE)
+                .build();
+
+        menuServiceAPI api = adapter.create(menuServiceAPI.class);
+
+        api.getComidasService(new Callback<ComidasService>() {
+            @Override
+            public void success(ComidasService comidasServices, Response response) {
+                loading.dismiss();
+                service_result_comidas = comidasServices;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                loading.dismiss();
+            }
+        });
     }
 
     private void iniciarVariables() {
