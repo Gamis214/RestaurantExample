@@ -48,7 +48,7 @@ public class AdaptadorInicio extends RecyclerView.Adapter<AdaptadorInicio.ViewHo
      */
     @Override
     public void onBindViewHolder(AdaptadorInicio.ViewHolder viewHolder, int position) {
-        Comida item = Comida.COMIDAS_POPULARES.get(position);
+        /*Comida item = Comida.COMIDAS_POPULARES.get(position);
 
         Glide.with(viewHolder.itemView.getContext())
                 .load(item.getImg())
@@ -56,11 +56,11 @@ public class AdaptadorInicio extends RecyclerView.Adapter<AdaptadorInicio.ViewHo
                 .into(viewHolder.imagen);
 
         viewHolder.nombre.setText(item.getNombre());
-        viewHolder.precio.setText("$" + item.getPrecio());
+        viewHolder.precio.setText("$" + item.getPrecio());*/
     }
 
     @Override
     public int getItemCount() {
-        return Comida.COMIDAS_POPULARES.size();
+        return 0;//Comida.COMIDAS_POPULARES.size();
     }
 }

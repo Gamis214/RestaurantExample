@@ -12,7 +12,7 @@ import retrofit.http.GET;
  */
 public interface menuServiceAPI {
 
-    @GET("/api/json/get/bVXMyHYmWa?indent=2")
+    @GET("/api/json/get/ctmOLbBfPC?indent=2")
     public void getComidasService(Callback<ComidasService> response);
 
 }

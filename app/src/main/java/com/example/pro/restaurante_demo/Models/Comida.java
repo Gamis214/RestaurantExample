@@ -5,13 +5,14 @@ import com.example.pro.restaurante_demo.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmObject;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * Created by pro on 16/02/16.
  */
-public class Comida  {
+public class Comida {
 
     @Getter
     @Setter
@@ -31,12 +32,12 @@ public class Comida  {
         this.img = img;
     }
 
-    public static final List<Comida> COMIDAS_POPULARES = new ArrayList<Comida>();
+    /*public static final List<Comida> COMIDAS_POPULARES = new ArrayList<Comida>();
     public static final List<Comida> BEBIDAS = new ArrayList<>();
     public static final List<Comida> POSTRES = new ArrayList<>();
     public static final List<Comida> PLATILLOS = new ArrayList<>();
 
-    /*static {
+    static {
         COMIDAS_POPULARES.add(new Comida(5, "Camarones Tismados", R.drawable.camarones));
         COMIDAS_POPULARES.add(new Comida(3.2f, "Rosca Herbárea", R.drawable.rosca));
         COMIDAS_POPULARES.add(new Comida(12f, "Sushi Extremo", R.drawable.sushi));

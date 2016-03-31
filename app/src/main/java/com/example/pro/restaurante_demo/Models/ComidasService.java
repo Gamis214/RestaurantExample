@@ -12,10 +12,6 @@ public class ComidasService {
 
     @Getter
     @Setter
-    private List<Comida> COMIDAS_POPULARES;
-
-    @Getter
-    @Setter
-    private List<Menu> MENU;
+    private Menu MENU;
 
 }

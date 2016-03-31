@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.pro.restaurante_demo.Adapters.AdaptadorInicio;
 import com.example.pro.restaurante_demo.R;
 
+import io.realm.Realm;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 /**
@@ -19,24 +20,43 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
  */
 public class FragmentoInicio extends Fragment{
 
-    private RecyclerView reciclador;
-    private LinearLayoutManager layoutManager;
+    private Realm realm;
+    private View view;
+    private ViewHolder holder = null;
     private AdaptadorInicio adaptador;
+    private LinearLayoutManager layoutManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_inicio, container, false);
+        view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
-        reciclador = (RecyclerView) view.findViewById(R.id.reciclador);
-        layoutManager = new LinearLayoutManager(getActivity());
-        reciclador.setLayoutManager(layoutManager);
+        holder = new ViewHolder(view);
 
-        adaptador = new AdaptadorInicio();
-
-        reciclador.setAdapter(new ScaleInAnimationAdapter(adaptador));
         return view;
 
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        layoutManager = new LinearLayoutManager(getActivity());
+        holder.reciclador.setLayoutManager(layoutManager);
+
+        adaptador = new AdaptadorInicio();
+
+        holder.reciclador.setAdapter(new ScaleInAnimationAdapter(adaptador));
+
+    }
+
+    class ViewHolder{
+        public RecyclerView reciclador;
+
+        public ViewHolder(View view){
+            reciclador = (RecyclerView) view.findViewById(R.id.reciclador);
+        }
+    }
+
 }

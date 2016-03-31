@@ -11,6 +11,7 @@ public class SeccionesMiCuenta {
 
     @Getter
     private Fragment fragment;
+
     @Getter
     private String Titulo;
 

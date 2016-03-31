@@ -22,4 +22,8 @@ public class Menu {
     @Setter
     private List<Comida> PLATILLOS;
 
+    @Getter
+    @Setter
+    private List<Comida> COMIDAS_POPULARES;
+
 }

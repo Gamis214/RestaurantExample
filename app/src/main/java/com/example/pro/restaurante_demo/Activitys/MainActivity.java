@@ -11,7 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.pro.restaurante_demo.Fragments.Categorias.FragmentoCategorias;
@@ -19,16 +19,26 @@ import com.example.pro.restaurante_demo.Fragments.MiCuenta.FragmentoCuenta;
 import com.example.pro.restaurante_demo.Fragments.inicio.FragmentoInicio;
 import com.example.pro.restaurante_demo.Models.Comida;
 import com.example.pro.restaurante_demo.Models.ComidasService;
+import com.example.pro.restaurante_demo.Models.Menu;
+import com.example.pro.restaurante_demo.Models.realm.ComidaCore;
+import com.example.pro.restaurante_demo.Models.realm.MenuCore;
 import com.example.pro.restaurante_demo.R;
 import com.example.pro.restaurante_demo.Servicios.menuServiceAPI;
 import com.example.pro.restaurante_demo.Utils.Constants;
 
+
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager fragmentManager;
     private Fragment fragmentoGenerico;
     private ComidasService service_result_comidas;
+    private ProgressDialog loading;
+
+    //-->RealmObjects
+    private Realm realm;
+    private RealmConfiguration realmConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +59,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         agregarToolbar();
         iniciarVariables();
-        getComidasService();
+        setRealm();
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        //-->validate core data from mobile
+        RealmResults<MenuCore> result = realm.where(MenuCore.class).findAll();
+        if(result.size() < 0){
+            getComidasService();
+        }
 
     }
 
     private void getComidasService(){
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Obteniendo Datos", "Porfavor espere...", false, false);
+        loading = ProgressDialog.show(this, "Obteniendo Datos", "Porfavor espere...", false, false);
 
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(Constants.ROOT_URL_COMIDA_SERVICE)
@@ -61,15 +87,79 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         api.getComidasService(new Callback<ComidasService>() {
             @Override
             public void success(ComidasService comidasServices, Response response) {
-                loading.dismiss();
+                Log.i("KEY","Succes Service Food Object: " + response);
                 service_result_comidas = comidasServices;
+                saveData();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Timber.e("Error Service retrofit: " + error);
                 loading.dismiss();
             }
         });
+    }
+
+    private void saveData() {
+
+        // All writes must be wrapped in a transaction to facilitate safe multi threading
+        realm.beginTransaction();
+        MenuCore menucore = realm.createObject(MenuCore.class);
+        RealmList<ComidaCore> listComidaPostres = new RealmList<>();
+        RealmList<ComidaCore> listComidabebidas = new RealmList<>();
+        RealmList<ComidaCore> listComidaPlatillos = new RealmList<>();
+        RealmList<ComidaCore> listComidaComidaspOPULARES = new RealmList<>();
+
+        List<Comida> comidaPostres = service_result_comidas.getMENU().getPOSTRES();
+        List<Comida> comidaBebidas = service_result_comidas.getMENU().getBEBIDAS();
+        List<Comida> comidaPlatillos = service_result_comidas.getMENU().getPLATILLOS();
+        List<Comida> comidaComidasPopulares = service_result_comidas.getMENU().getCOMIDAS_POPULARES();
+
+        for(int x=0; x < comidaPostres.size() ;x++){
+            ComidaCore comida = realm.createObject(ComidaCore.class);
+            comida.setNombre(comidaPostres.get(x).getNombre());
+            comida.setImg(comidaPostres.get(x).getImg());
+            comida.setPrecio(comidaPostres.get(x).getPrecio());
+            listComidaPostres.add(comida);
+        }
+
+        menucore.setPOSTRES(listComidaPostres);
+
+        for(int x=0; x < comidaBebidas.size() ;x++){
+            ComidaCore comida = realm.createObject(ComidaCore.class);
+            comida.setNombre(comidaBebidas.get(x).getNombre());
+            comida.setImg(comidaBebidas.get(x).getImg());
+            comida.setPrecio(comidaBebidas.get(x).getPrecio());
+            listComidabebidas.add(comida);
+        }
+
+        menucore.setBEBIDAS(listComidabebidas);
+
+        for(int x=0; x < comidaPlatillos.size() ;x++){
+            ComidaCore comida = realm.createObject(ComidaCore.class);
+            comida.setNombre(comidaPlatillos.get(x).getNombre());
+            comida.setImg(comidaPlatillos.get(x).getImg());
+            comida.setPrecio(comidaPlatillos.get(x).getPrecio());
+            listComidaPlatillos.add(comida);
+        }
+
+        menucore.setPLATILLOS(listComidaPlatillos);
+
+
+        for(int x=0; x < comidaComidasPopulares.size() ;x++){
+            ComidaCore comida = realm.createObject(ComidaCore.class);
+            comida.setNombre(comidaComidasPopulares.get(x).getNombre());
+            comida.setImg(comidaComidasPopulares.get(x).getImg());
+            comida.setPrecio(comidaComidasPopulares.get(x).getPrecio());
+            listComidaComidaspOPULARES.add(comida);
+        }
+
+        menucore.setCOMIDAS_POPULARES(listComidaComidaspOPULARES);
+
+        // When the transaction is committed, all changes a synced to disk.
+        realm.commitTransaction();
+
+        loading.dismiss();
     }
 
     private void iniciarVariables() {
@@ -78,10 +168,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (navigationView != null) {
 
             navigationView.setNavigationItemSelectedListener(this);
-            // Seleccionar item por defecto
             seleccionarItem(navigationView.getMenu().getItem(0));
 
         }
+    }
+
+    private void setRealm() {
+        // Create the Realm configuration
+        realmConfig = new RealmConfiguration.Builder(this).build();
+        realm = Realm.getInstance(realmConfig);
     }
 
     private void seleccionarItem(MenuItem item){
